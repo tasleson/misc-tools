@@ -20,7 +20,8 @@ summary = dict(string_num=0, string_size_total=0, booleans=0,
                uint64_count=0, int64_count=0, uint32_count=0,
                int32_count=0, double_count=0,
                dictionary_key_num=0, dictionary_key_size_total=0,
-               interface_num=0, interface_size_total=0, dbus_object_num=0)
+               interface_num=0, interface_size_total=0, dbus_object_num=0,
+               property_name_num=0, property_name_size_total=0)
 
 
 def size_value(v):
@@ -62,6 +63,8 @@ def size_value(v):
 
 def properties(p):
     for k, v in p.items():
+        summary['property_name_num'] += 1
+        summary['property_name_size_total'] += len(k)
         size_value(v)
         # print ("Key:%s = Value:%s" % (k, v))
 
@@ -81,6 +84,7 @@ def size_summary():
     total_size_variable_len += summary['interface_size_total']
     total_size_variable_len += summary['dictionary_key_size_total']
     total_size_variable_len += summary['object_path_size_total']
+    total_size_variable_len += summary['property_name_size_total']
 
     print("We retrieved %d objects" % summary['dbus_object_num'])
     print('Size fixed len data = %d' % total_size_fixed_len)
