@@ -96,7 +96,14 @@ def size_summary():
 
 
 def retrieve_object_size_data(name_space, object_path):
-    bus = dbus.SystemBus(mainloop=DBusGMainLoop())
+
+    if sys.argv[1] == 'system':
+        bus = dbus.SystemBus(mainloop=DBusGMainLoop())
+    elif sys.argv[1] == 'session':
+        bus = dbus.SessionBus(mainloop=DBusGMainLoop())
+    else:
+        print("Invalid bus %s" % (sys.argv[1]))
+        sys.exit(1)
 
     manager = dbus.Interface(bus.get_object(name_space, object_path),
                              "org.freedesktop.DBus.ObjectManager")
@@ -114,11 +121,11 @@ def retrieve_object_size_data(name_space, object_path):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print("syntax: <bus name> <object path>")
+    if len(sys.argv) != 4:
+        print("syntax: [system|session] <bus name> <object path>")
         sys.exit(1)
 
-    retrieve_object_size_data(sys.argv[1], sys.argv[2])
+    retrieve_object_size_data(sys.argv[2], sys.argv[3])
 
     pp.pprint(summary)
     size_summary()
