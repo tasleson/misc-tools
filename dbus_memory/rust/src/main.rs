@@ -24,7 +24,7 @@ fn main() {
         )
     ));
 
-    for i in 0..602 {
+    for i in 0..9999 {
         let object_name = format!("/com/blah/storage/block/{}", i);
         let v_name = format!("lvol{}", i);
 

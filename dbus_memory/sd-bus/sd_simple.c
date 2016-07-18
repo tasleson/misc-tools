@@ -149,7 +149,7 @@ int main() {
         goto out;
     }
 
-    for (i = 0; i < 603; ++i ) {
+    for (i = 0; i < 10000; ++i ) {
         char object_path[128];
 
         snprintf(object_path, sizeof(object_path), "/com/blah/storage/block/%d", i);
