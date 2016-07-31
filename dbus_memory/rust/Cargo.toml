@@ -4,4 +4,4 @@ version = "0.1.0"
 authors = ["Tony Asleson <tasleson@redhat.com>"]
 
 [dependencies]
-dbus = "0.3"
+dbus = { git = "https://github.com/diwic/dbus-rs.git" }

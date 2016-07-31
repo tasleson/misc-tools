@@ -2,21 +2,21 @@
 name = "dbus_test"
 version = "0.1.0"
 dependencies = [
- "dbus 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "dbus 0.3.4 (git+https://github.com/diwic/dbus-rs.git)",
 ]
 
 [[package]]
 name = "dbus"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
+version = "0.3.4"
+source = "git+https://github.com/diwic/dbus-rs.git#9f9af79b2002a69e83313fd978cde803999ded96"
 dependencies = [
- "libc 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "pkg-config 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "libc"
-version = "0.2.11"
+version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
