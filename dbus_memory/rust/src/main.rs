@@ -58,7 +58,7 @@ fn main() {
     for some_strings in 0..7 {
         let name = format!("string_d_{}", some_strings);
         let value = format!("some bogus data {}", some_strings);
-        interface = interface.add_p(f.property::<&str,_>(name, ()).on_get(|i,_| { i.append(&value); Ok(()) }));
+        interface = interface.add_p(f.property::<&str,_>(name, ()).on_get(move |i,_| { i.append(&value); Ok(()) }));
     }
 
     for some_bools in 0..5 {
