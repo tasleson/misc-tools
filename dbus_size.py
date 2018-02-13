@@ -108,7 +108,7 @@ def retrieve_object_size_data(name_space, object_path):
     manager = dbus.Interface(bus.get_object(name_space, object_path),
                              "org.freedesktop.DBus.ObjectManager")
 
-    objects = manager.GetManagedObjects()
+    objects = manager.GetManagedObjects(timeout=1000)
 
     for object_path, val in objects.items():
         summary['dbus_object_num'] += 1
