@@ -123,6 +123,8 @@ def retrieve_object_size_data(name_space, object_path):
 if __name__ == '__main__':
     if len(sys.argv) != 4:
         print("syntax: [system|session] <bus name> <object path>")
+        print("\nexample \n"
+              "./dbus_size.py session com.blah.storage /com/blah/storage/block")
         sys.exit(1)
 
     retrieve_object_size_data(sys.argv[2], sys.argv[3])
