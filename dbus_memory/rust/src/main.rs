@@ -10,6 +10,7 @@ use std::sync::Arc;
 struct OPData;
 
 impl DataType for OPData {
+    type Tree = ();
     type ObjectPath = String;
     type Property = ();
     type Interface = ();
@@ -22,7 +23,7 @@ fn main() {
     c.register_name("com.blah.storage", NameFlag::ReplaceExisting as u32).unwrap();
 
     let f = Factory::new_fn::<OPData>();
-    let mut tree = f.tree();
+    let mut tree = f.tree(());
 
     tree = tree.add(f.object_path("/com/blah/storage/block", "".to_owned())
         .introspectable()
