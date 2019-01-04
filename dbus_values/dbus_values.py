@@ -2,7 +2,6 @@
 
 import dbus
 import sys
-import pprint
 from dbus.mainloop.glib import DBusGMainLoop
 
 # Validate data values.
@@ -33,6 +32,42 @@ def properties(p):
             print("Missing type, Key:%s = Value:%s" % (str(k), str(v)))
 
 
+def check_in_out(proxy):
+    for a0 in [0, 128, 255]:
+        for a1 in [True, False]:
+            for a2 in [-32768, -1, 1, 32767]:
+                for a3 in [0, 2**15, 2**16-1]:
+                    for a4 in [-2147483648, -1, 1, 2147483647]:
+                        for a5 in [0, 0x11223344, 2**32-1]:
+                            for a6 in [-9223372036854775808, -1, 0,
+                                       9223372036854775807]:
+                                for a7 in [0, 0x1122334455667788, 2**64-1]:
+                                    for a8 in [-1.7976931348623157e+308,
+                                               -1.1, 0.0,
+                                               2.2250738585072014e-308,
+                                               1.7976931348623157e+308]:
+                                        result = proxy.AllTheThings(
+                                            dbus.Byte(a0),
+                                            dbus.Boolean(a1),
+                                            dbus.Int16(a2),
+                                            dbus.UInt16(a3),
+                                            dbus.Int32(a4),
+                                            dbus.UInt32(a5),
+                                            dbus.Int64(a6),
+                                            dbus.UInt64(a7),
+                                            dbus.Double(a8))
+
+                                        assert result[0] == a0
+                                        assert result[1] == a1
+                                        assert result[2] == a2
+                                        assert result[3] == a3
+                                        assert result[4] == a4
+                                        assert result[5] == a5
+                                        assert result[6] == a6
+                                        assert result[7] == a7
+                                        assert result[8] == a8
+
+
 def check_values(name_space, object_path):
     bus = dbus.SessionBus(mainloop=DBusGMainLoop())
     manager = dbus.Interface(bus.get_object(name_space, object_path),
@@ -45,6 +80,9 @@ def check_values(name_space, object_path):
             if interface == "com.blah.sizecheck.Values":
                 print("interface: %s" % interface)
                 properties(props)
+                remote_obj = bus.get_object("com.blah.sizecheck", object_path)
+                iface = dbus.Interface(remote_obj, interface)
+                check_in_out(iface)
 
 
 if __name__ == '__main__':
