@@ -46,7 +46,7 @@ def check_in_out(proxy):
                                                -1.1, 0.0,
                                                2.2250738585072014e-308,
                                                1.7976931348623157e+308]:
-                                        result = proxy.AllTheThings(
+                                        result_new_arg = proxy.AllTheThings(
                                             dbus.Byte(a0),
                                             dbus.Boolean(a1),
                                             dbus.Int16(a2),
@@ -57,15 +57,32 @@ def check_in_out(proxy):
                                             dbus.UInt64(a7),
                                             dbus.Double(a8))
 
-                                        assert result[0] == a0
-                                        assert result[1] == a1
-                                        assert result[2] == a2
-                                        assert result[3] == a3
-                                        assert result[4] == a4
-                                        assert result[5] == a5
-                                        assert result[6] == a6
-                                        assert result[7] == a7
-                                        assert result[8] == a8
+                                        result_deprecated = proxy.\
+                                            AllTheThingsDeprecated(
+                                            dbus.Byte(a0),
+                                            dbus.Boolean(a1),
+                                            dbus.Int16(a2),
+                                            dbus.UInt16(a3),
+                                            dbus.Int32(a4),
+                                            dbus.UInt32(a5),
+                                            dbus.Int64(a6),
+                                            dbus.UInt64(a7),
+                                            dbus.Double(a8))
+
+                                        expected = (a0, a1, a2, a3, a4,
+                                                    a5, a6, a7, a8)
+
+                                        if expected != result_new_arg:
+                                            print("Expected  : ", expected)
+                                            print("Actual new: ",
+                                                  result_new_arg)
+
+                                        assert expected == result_new_arg
+
+                                        if expected != result_deprecated:
+                                            print("Expected  :", expected)
+                                            print("Actual Dep:",
+                                                  result_deprecated)
 
 
 def check_values(name_space, object_path):

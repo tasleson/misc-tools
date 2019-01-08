@@ -94,6 +94,48 @@ fn main() {
 
     interface = interface.add_m(all_the_things_method);
 
+    fn all_the_things_deprecated(m: &MethodInfo<MTFn<OPData>, OPData>) -> MethodResult {
+        let message: &Message = m.msg;
+        let items = message.get_items();
+
+        let return_message = message
+            .method_return()
+            .append::<u8>(items[0].inner().unwrap())
+            .append::<bool>(items[1].inner().unwrap())
+            .append::<i16>(items[2].inner().unwrap())
+            .append::<u16>(items[3].inner().unwrap())
+            .append::<i32>(items[4].inner().unwrap())
+            .append::<u32>(items[5].inner().unwrap())
+            .append::<i64>(items[6].inner().unwrap())
+            .append::<u64>(items[7].inner().unwrap())
+            .append::<f64>(items[8].inner().unwrap());
+
+        Ok(vec![return_message])
+    }
+
+    let all_the_things_method_deprecated = f
+        .method("AllTheThingsDeprecated", (), all_the_things_deprecated)
+        .in_arg(("byte", "y"))
+        .in_arg(("boolean", "b"))
+        .in_arg(("INT16", "n"))
+        .in_arg(("UINT16", "q"))
+        .in_arg(("INT32", "i"))
+        .in_arg(("UINT32", "u"))
+        .in_arg(("INT64", "x"))
+        .in_arg(("UINT64", "t"))
+        .in_arg(("DOUBLE", "d"))
+        .out_arg(("byte", "y"))
+        .out_arg(("boolean", "b"))
+        .out_arg(("INT16", "n"))
+        .out_arg(("UINT16", "u"))
+        .out_arg(("INT32", "i"))
+        .out_arg(("UINT32", "u"))
+        .out_arg(("INT64", "x"))
+        .out_arg(("UINT64", "t"))
+        .out_arg(("DOUBLE", "d"));
+
+    interface = interface.add_m(all_the_things_method_deprecated);
+
     interface = interface.add_p(f.property::<&str, _>("some_string", ()).on_get(|i, _| {
         i.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789");
         Ok(())
