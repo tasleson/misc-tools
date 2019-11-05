@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 import tempfile
+import plumbum
 from plumbum.cmd import losetup, mkfs, mount, umount
 import os
 import parted
 from multiprocessing import Process, Value
 import signal
+import time
 
 # Nothing here is thread safe, but will be process safe!
 
@@ -78,8 +80,14 @@ class Filesystem(object):
 
     def destroy(self):
         # Unmount
-        umount(self.dir)
-        os.rmdir(self.dir)
+
+        for _ in range(0, 10):
+            try:
+                umount(self.dir)
+                os.rmdir(self.dir)
+                break
+            except plumbum.commands.processes.ProcessExecutionError:
+                time.sleep(0.1)
 
     def path(self):
         return self.dir
