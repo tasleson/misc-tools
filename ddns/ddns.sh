@@ -10,9 +10,12 @@
 #
 # Using ksh for OpenBSD because bash is failing to install for 6.7 :-/
 
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+
 # Storing the user configurable stuff in a sep. file
 # eg. ETHERNET, USERNAME, PASSWORD, HOSTS
-. ./ddns.conf
+. $SCRIPTPATH/ddns.conf
 
 STATE=/root/ddns
 LOGFILE=/var/log/ddns.log
