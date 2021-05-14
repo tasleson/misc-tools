@@ -1,0 +1,18 @@
+# storage links for vm disks that are predictable based on hardware topology: /dev/disk/by-top/
+# File based on 60-persistent-storage.rules
+
+ACTION=="remove", GOTO="top_end"
+ENV{UDEV_DISABLE_PERSISTENT_STORAGE_RULES_FLAG}=="1", GOTO="top_end"
+
+SUBSYSTEM!="block", GOTO="top_end"
+KERNEL!="sd*", GOTO="top_end"
+
+# ignore partitions that span the entire disk
+TEST=="whole_disk", GOTO="top_end"
+
+IMPORT{program}="/usr/sbin/vmblkid.py $devnode"
+
+ENV{VMBLKID}=="?*", ENV{DEVTYPE}=="disk", SYMLINK+="disk/by-top/$env{VMBLKID}"
+ENV{VMBLKID}=="?*", ENV{DEVTYPE}=="partition", SYMLINK+="disk/by-top/$env{VMBLKID}-part%n"
+
+LABEL="top_end"
