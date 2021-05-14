@@ -1,4 +1,4 @@
-####Proof of concept, stable device names based on location
+#### Proof of concept, stable device names based on location
 
 Users want an easy to use consistent device name that works for VM provisioning with things like kickstart.  This is not a substitute for using filesystem uuids in things like `/etc/fstab`.
 
