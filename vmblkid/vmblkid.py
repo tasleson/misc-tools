@@ -76,10 +76,6 @@ if __name__ == "__main__":
     # Strip off partition number
     device = device.rstrip(string.digits)
 
-    with open("/tmp/debug.txt", "a") as w:
-        for k, v in os.environ.items():
-            w.write("DEBUG: %s=%s\n" % (k, v))
-
     if not os.path.exists(VM_BUS_PATH):
         sys.exit(1)
 
