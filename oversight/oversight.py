@@ -70,7 +70,8 @@ if __name__ == '__main__':
 
         loop = GLib.MainLoop()
         loop.run()
-
+    except KeyboardInterrupt:
+        pass
     except BaseException:
         traceback.print_exc()
         sys.exit(1)
