@@ -13,12 +13,13 @@ from gi.repository import GLib
 
 OBJECT_MANAGER = "org.freedesktop.DBus.ObjectManager"
 INTERFACE = "com.redhat.lvmdbus1"
+SRV_PATH = "/com/redhat/lvmdbus1"
 
 
 def properties_changed(*args, **kwargs):
     # Is there a better way to do this without requiring registering a
     # signal handler for every object?
-    if kwargs["object_path"].startswith("/com/redhat/lvmdbus1"):
+    if kwargs["object_path"].startswith(SRV_PATH):
         print("\n\nPROPERY CHANGED\n\n")
 
         interface = args[0]
@@ -52,7 +53,7 @@ if __name__ == '__main__':
     bus = dbus.SystemBus()
     try:
         # Register for main signals
-        dobj = bus.get_object(INTERFACE, "/com/redhat/lvmdbus1")
+        dobj = bus.get_object(INTERFACE, SRV_PATH)
         dobj.connect_to_signal(dbus_interface=OBJECT_MANAGER,
                                signal_name="InterfacesAdded",
                                handler_function=object_manager_add)
