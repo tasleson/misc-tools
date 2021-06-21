@@ -12,7 +12,7 @@ import dbus.mainloop.glib
 from gi.repository import GLib
 
 OBJECT_MANAGER = "org.freedesktop.DBus.ObjectManager"
-INTERFACE = "com.redhat.lvmdbus1"
+BUS_NAME = "com.redhat.lvmdbus1"
 SRV_PATH = "/com/redhat/lvmdbus1"
 
 
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     bus = dbus.SystemBus()
     try:
         # Register for main signals
-        dobj = bus.get_object(INTERFACE, SRV_PATH)
+        dobj = bus.get_object(BUS_NAME, SRV_PATH)
         dobj.connect_to_signal(dbus_interface=OBJECT_MANAGER,
                                signal_name="InterfacesAdded",
                                handler_function=object_manager_add)
