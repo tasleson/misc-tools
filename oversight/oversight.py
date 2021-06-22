@@ -97,6 +97,9 @@ def _do_obj_del(object_path, interfaces_removed):
         for intf in interfaces_removed:
             del objects[object_path][intf]
 
+        if not objects[object_path]:
+            del objects[object_path]
+
 
 def object_manager_remove(object_path, payload):
 
