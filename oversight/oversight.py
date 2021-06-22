@@ -115,8 +115,7 @@ def object_manager_remove(object_path, payload):
         pending_rm.append((object_path, payload))
 
 
-def get_objects(the_bus):
-    global objects
+def _get_managed_objects(the_bus):
     rc = dict()
     obj_mgr = the_bus.get_object(BUS_NAME, SRV_PATH, introspect=False)
     obj_int = dbus.Interface(obj_mgr, OBJECT_MANAGER)
@@ -125,7 +124,12 @@ def get_objects(the_bus):
     for object_path, obj_value in objects.items():
         rc[object_path] = obj_value
 
-    objects = rc
+    return rc
+
+
+def get_objects(the_bus):
+    global objects
+    objects = _get_managed_objects(the_bus)
 
 
 if __name__ == '__main__':
