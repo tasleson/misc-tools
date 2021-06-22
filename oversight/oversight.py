@@ -145,7 +145,13 @@ if __name__ == '__main__':
         bus.add_signal_receiver(properties_changed,
                                 signal_name="PropertiesChanged",
                                 path_keyword="object_path")
-        get_objects(bus)
+
+        # There is an inherent race condition between fetching all the objects
+        # and having the signal handlers in place.  We will install signal
+        # handlers and schedule the object retrieval to occur when the main
+        # even loop is idle.  This way the main loop is up and processing
+        # events before we retrieve the entire object state.
+        GLib.idle_add(get_objects, bus)
 
         loop = GLib.MainLoop()
         loop.run()
