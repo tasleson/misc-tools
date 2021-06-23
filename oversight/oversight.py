@@ -2,6 +2,8 @@
 
 """
 Prototype signal verification for lvmdbusd.
+
+Note: Entire execution of code is event driven utilizing the GLib main context.
 """
 import copy
 import os
