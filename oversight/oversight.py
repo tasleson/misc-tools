@@ -17,7 +17,8 @@ OBJECT_MANAGER = "org.freedesktop.DBus.ObjectManager"
 BUS_NAME = "com.redhat.lvmdbus1"
 SRV_PATH = "/com/redhat/lvmdbus1"
 
-objects = None
+inital_fetch_complete = False
+objects = dict()
 
 pending_objects = []
 pending_add = []
@@ -49,7 +50,7 @@ def log(msg):
 def dump():
     global objects
 
-    if objects is not None:
+    if inital_fetch_complete:
         for obj, info in objects.items():
             log("object %s\n" % obj)
             for intf, values in info.items():
@@ -108,7 +109,7 @@ def object_manager_add(object_path, payload):
 
     last_update = time.time()
 
-    if objects is not None:
+    if inital_fetch_complete:
         for adding in pending_add:
             _do_obj_add(adding[0], adding[1])
 
@@ -140,7 +141,7 @@ def object_manager_remove(object_path, payload):
 
     last_update = time.time()
 
-    if objects is not None:
+    if inital_fetch_complete:
         for p in pending_rm:
             _do_obj_del(p[0], p[1])
 
@@ -185,7 +186,9 @@ def kill_test():
 
 def get_objects(the_bus):
     global objects
+    global inital_fetch_complete
     objects = _get_managed_objects(the_bus)
+    inital_fetch_complete = True
 
 
 def check_idle():
