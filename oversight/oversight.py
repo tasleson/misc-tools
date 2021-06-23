@@ -154,9 +154,9 @@ def _get_managed_objects(the_bus):
     rc = dict()
     obj_mgr = the_bus.get_object(BUS_NAME, SRV_PATH, introspect=False)
     obj_int = dbus.Interface(obj_mgr, OBJECT_MANAGER)
-    objects = obj_int.GetManagedObjects()
+    obj_cur = obj_int.GetManagedObjects()
 
-    for object_path, obj_value in objects.items():
+    for object_path, obj_value in obj_cur.items():
         rc[object_path] = obj_value
 
     return rc
