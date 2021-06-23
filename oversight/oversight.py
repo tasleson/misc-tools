@@ -4,6 +4,28 @@
 Prototype signal verification for lvmdbusd.
 
 Note: Entire execution of code is event driven utilizing the GLib main context.
+
+To run this edit the unit test
+
+diff --git a/test/dbus/lvmdbustest.py b/test/dbus/lvmdbustest.py
+index 6d692223f..5ea2b587b 100755
+--- a/test/dbus/lvmdbustest.py
++++ b/test/dbus/lvmdbustest.py
+@@ -248,6 +248,10 @@ class TestDbusService(unittest.TestCase):
+        def tearDown(self):
+                # If we get here it means we passed setUp, so lets remove anything
+                # and everything that remains, besides the PVs themselves
++
++               # Allow the signal verification process to do some checks
++               time.sleep(4)
++
+                self.objs, self.bus = get_objects()
+
+                # The self.objs[PV_INT] list only contains those which we should be
+
+To induce a delay before teardown, to allow this process the ability to handle
+outstanding signals and do a comparison.
+
 """
 import copy
 import os
