@@ -162,7 +162,7 @@ def _get_managed_objects(the_bus):
 
 
 def process_pid(name):
-    for p in [pid for pid in os.listdir('/proc') if pid.isdigit()]:
+    for p in [pid for pid in os.listdir("/proc") if pid.isdigit()]:
         try:
             with open(os.path.join("/proc/", p, "cmdline"), "r") as cmd:
                 cmd_line = cmd.readline()
@@ -217,33 +217,39 @@ def check_idle():
                 else:
                     for interface, prop_vals in entry.items():
                         if interface not in p[object_path]:
-                            log_error("Missing interface %s for object %s" %
-                                  (interface, object_path))
+                            log_error(
+                                "Missing interface %s for object %s"
+                                % (interface, object_path)
+                            )
                         else:
                             for prop, value in prop_vals.items():
                                 if prop not in c[object_path][interface]:
-                                    log_error("Missing property %s for interface "
-                                          "%s for object %s" %
-                                          (prop, interface, object_path))
+                                    log_error(
+                                        "Missing property %s for interface "
+                                        "%s for object %s"
+                                        % (prop, interface, object_path)
+                                    )
                                 else:
                                     e = p[object_path][interface][prop]
-                                    #log("Comparing (%s): %s to %s" %
+                                    # log("Comparing (%s): %s to %s" %
                                     #      (prop, str(value), str(e)))
                                     if value != e:
-                                        log_error("Property (%s) mismatch "
-                                              "objectmgr %s !=  signal value: "
-                                              "%s object: %s" %
-                                              (prop, str(value), str(e),
-                                               object_path))
+                                        log_error(
+                                            "Property (%s) mismatch "
+                                            "objectmgr %s !=  signal value: "
+                                            "%s object: %s"
+                                            % (prop, str(value), str(e), object_path)
+                                        )
                                     else:
                                         del p[object_path][interface][prop]
 
                             # We shouldn't have any properties left
                             if p[object_path][interface]:
-                                log_error("The following properties were present "
-                                      "in signals db which were not present in "
-                                      "object manager for object: %s" %
-                                      object_path)
+                                log_error(
+                                    "The following properties were present "
+                                    "in signals db which were not present in "
+                                    "object manager for object: %s" % object_path
+                                )
                                 for k, v in p[object_path][interface].items():
                                     log("%s:%s" % (str(k), str(v)))
 
@@ -251,18 +257,21 @@ def check_idle():
 
                     # We shouldn't have any interfaces left
                     if p[object_path]:
-                        log_error("The following interfaces were present in "
-                              "signals db which were not present in object"
-                              " manager for object %s" % object_path)
+                        log_error(
+                            "The following interfaces were present in "
+                            "signals db which were not present in object"
+                            " manager for object %s" % object_path
+                        )
                         for intf in p[object_path].keys():
-                            log("interface %s for object %s" %
-                                  (intf, object_path))
+                            log("interface %s for object %s" % (intf, object_path))
                     del p[object_path]
 
             # We shouldn't have any objects left
             if p:
-                log_error("The following objects were present in signals db which "
-                          "were not preset in object manager")
+                log_error(
+                    "The following objects were present in signals db which "
+                    "were not preset in object manager"
+                )
                 for objs in p.keys():
                     log_error("%s" % str(objs))
         except:
@@ -270,8 +279,10 @@ def check_idle():
             return False
 
         if errors > 0:
-            log_error("Validating objects exiting ON ERROR! duration = %f" %
-                  (time.time() - start))
+            log_error(
+                "Validating objects exiting ON ERROR! duration = %f"
+                % (time.time() - start)
+            )
 
             # Delay the end of the test to see if whatever is incorrect resolves
             # itself.
@@ -283,23 +294,29 @@ def check_idle():
     return True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     bus = dbus.SystemBus()
     try:
         # Register for main signals
         dobj = bus.get_object(BUS_NAME, SRV_PATH)
-        dobj.connect_to_signal(dbus_interface=OBJECT_MANAGER,
-                               signal_name="InterfacesAdded",
-                               handler_function=object_manager_add)
+        dobj.connect_to_signal(
+            dbus_interface=OBJECT_MANAGER,
+            signal_name="InterfacesAdded",
+            handler_function=object_manager_add,
+        )
 
-        dobj.connect_to_signal(dbus_interface=OBJECT_MANAGER,
-                               signal_name="InterfacesRemoved",
-                               handler_function=object_manager_remove)
+        dobj.connect_to_signal(
+            dbus_interface=OBJECT_MANAGER,
+            signal_name="InterfacesRemoved",
+            handler_function=object_manager_remove,
+        )
 
-        bus.add_signal_receiver(properties_changed,
-                                signal_name="PropertiesChanged",
-                                path_keyword="object_path")
+        bus.add_signal_receiver(
+            properties_changed,
+            signal_name="PropertiesChanged",
+            path_keyword="object_path",
+        )
 
         # There is an inherent race condition between fetching all the objects
         # and having the signal handlers in place.  We will install signal
