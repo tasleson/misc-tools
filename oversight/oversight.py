@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
 """
-Prototype signal verification for lvmdbusd.
+Prototype signal verification for lvmdbusd or other dbus services
 
 Note: Entire execution of code is event driven utilizing the GLib main context.
 
-To run this edit the unit test
+To run the lvmdbus test suite, edit the unit test (TODO: Add option to unit test)
 
 diff --git a/test/dbus/lvmdbustest.py b/test/dbus/lvmdbustest.py
 index 6d692223f..5ea2b587b 100755
@@ -322,6 +322,14 @@ def check_idle():
 
 
 if __name__ == "__main__":
+
+    if len(sys.argv) > 1 and len(sys.argv) != 3:
+        log("syntax: None or bus name path, eg. %s %s %s" % (sys.argv[0], BUS_NAME, SRV_PATH))
+        sys.exit(1)
+    elif len(sys.argv) == 3:
+        BUS_NAME = sys.argv[1]
+        SRV_PATH = sys.argv[2]
+
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     bus = dbus.SystemBus()
     try:
