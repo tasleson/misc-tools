@@ -298,8 +298,24 @@ def check_idle():
                                             "%s object: %s"
                                             % (prop, str(value), str(e), object_path)
                                         )
-                                    else:
-                                        del p[object_path][interface][prop]
+
+                                        # Dump objects
+                                        log("Signal db")
+                                        dump_object(object_path,
+                                                    objects[object_path])
+                                        log("GetManagedObjects")
+                                        dump_object(object_path, c[object_path])
+
+                                        # Fix up signal db to prevent reporting
+                                        # same error over and over again.
+                                        objects[object_path][interface][
+                                            prop] = value
+
+                                    # Regardless of comparison, we will remove
+                                    # property from signal db copy so we don't
+                                    # get false error about it still being
+                                    # present when done.
+                                    del p[object_path][interface][prop]
 
                             # We shouldn't have any properties left
                             if p[object_path][interface]:
