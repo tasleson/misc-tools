@@ -81,17 +81,28 @@ def log(msg):
     last_log = n
 
 
+def dump_object(object_path, interfaces):
+    log(" ")
+    log("object %s" % object_path)
+    for intf, values in sorted(interfaces.items(), key=lambda x: x[0]):
+        log("Interface %s" % intf)
+        for prop, val in sorted(values.items(), key=lambda x: x[0]):
+            log("\t%s: %s" % (prop, str(val)))
+
+
 def dump():
     global objects
 
     if inital_fetch_complete:
-        for obj, info in objects.items():
-            log("object %s\n" % obj)
-            for intf, values in info.items():
+        log("**** Dumping signal db")
+        for obj_path, info in objects.items():
+            dump_object(obj_path, info)
 
-                log("Interface %s" % intf)
-                for prop, val in values.items():
-                    log("\t%s: %s" % (prop, str(val)))
+    log("**** Dumping GetManagedObjects\n")
+    sys_bus = dbus.SystemBus()
+    c = _get_managed_objects(sys_bus)
+    for obj_path, info in c.items():
+        dump_object(obj_path, info)
 
 
 def _do_prop_update(object_path, interface, changed, invalidated):
