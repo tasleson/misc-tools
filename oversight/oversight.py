@@ -300,24 +300,32 @@ def check_idle():
                                     if value != e:
                                         # Check to see if this property was invalidated!
                                         key = object_path + interface
-                                        if not (key in invalidated and prop in invalidated[key]):
+                                        if not (
+                                            key in invalidated
+                                            and prop in invalidated[key]
+                                        ):
                                             log_error(
                                                 "Property (%s) mismatch "
                                                 "objectmgr %s !=  signal value: "
                                                 "%s object: %s"
-                                                % (prop, str(value), str(e), object_path)
+                                                % (
+                                                    prop,
+                                                    str(value),
+                                                    str(e),
+                                                    object_path,
+                                                )
                                             )
                                             # Dump objects
                                             log("Signal db")
-                                            dump_object(object_path,
-                                                        objects[object_path])
+                                            dump_object(
+                                                object_path, objects[object_path]
+                                            )
                                             log("GetManagedObjects")
                                             dump_object(object_path, c[object_path])
 
                                         # Fix up signal db to prevent reporting
                                         # same error over and over again.
-                                        objects[object_path][interface][
-                                            prop] = value
+                                        objects[object_path][interface][prop] = value
 
                                     # Regardless of comparison, we will remove
                                     # property from signal db copy so we don't
@@ -382,7 +390,10 @@ def check_idle():
 if __name__ == "__main__":
 
     if len(sys.argv) > 1 and len(sys.argv) != 3:
-        log("syntax: None or bus name path, eg. %s %s %s" % (sys.argv[0], BUS_NAME, SRV_PATH))
+        log(
+            "syntax: None or bus name path, eg. %s %s %s"
+            % (sys.argv[0], BUS_NAME, SRV_PATH)
+        )
         sys.exit(1)
     elif len(sys.argv) == 3:
         BUS_NAME = sys.argv[1]
