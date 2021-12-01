@@ -63,6 +63,7 @@ last_update = 0
 dirty = False
 last_log = time.time()
 errors = 0
+invalidated = dict()
 
 
 def log_error(msg):
@@ -106,13 +107,17 @@ def dump():
         dump_object(obj_path, info)
 
 
-def _do_prop_update(object_path, interface, changed, invalidated):
+def _do_prop_update(object_path, interface, changed, invalid):
     global objects
+    global invalidated
 
     for prop, new_value in changed.items():
         log("%s[%s][%s] = %s" % (object_path, interface, prop, str(new_value)))
         objects[object_path][interface][prop] = new_value
-    log("\n")
+
+    if invalid and len(invalid) > 0:
+        log("%s[%s] invalidated: [%s]" % ((object_path, interface, ",".join(invalid))))
+        invalidated.setdefault(object_path + interface, []).extend(invalid)
 
 
 def properties_changed(*args, **kwargs):
@@ -131,7 +136,7 @@ def properties_changed(*args, **kwargs):
         object_path = kwargs["object_path"]
         interface = args[0]
         changed = args[1]
-        invalidated = args[2]
+        invalid = args[2]
 
         if objects:
 
@@ -139,9 +144,9 @@ def properties_changed(*args, **kwargs):
             for pp in pending_update:
                 _do_prop_update(*pp)
 
-            _do_prop_update(object_path, interface, changed, invalidated)
+            _do_prop_update(object_path, interface, changed, invalid)
         else:
-            pending_update.append((object_path, interface, changed, invalidated))
+            pending_update.append((object_path, interface, changed, invalid))
 
 
 def _do_obj_add(object_path, interface_property_dict):
@@ -247,6 +252,7 @@ def get_objects(the_bus):
 def check_idle():
     global last_update
     global dirty
+    global invalidated
 
     current = time.time()
     time_since_last_signal = current - last_update
@@ -292,19 +298,21 @@ def check_idle():
                                     # log("Comparing (%s): %s to %s" %
                                     #      (prop, str(value), str(e)))
                                     if value != e:
-                                        log_error(
-                                            "Property (%s) mismatch "
-                                            "objectmgr %s !=  signal value: "
-                                            "%s object: %s"
-                                            % (prop, str(value), str(e), object_path)
-                                        )
-
-                                        # Dump objects
-                                        log("Signal db")
-                                        dump_object(object_path,
-                                                    objects[object_path])
-                                        log("GetManagedObjects")
-                                        dump_object(object_path, c[object_path])
+                                        # Check to see if this property was invalidated!
+                                        key = object_path + interface
+                                        if not (key in invalidated and prop in invalidated[key]):
+                                            log_error(
+                                                "Property (%s) mismatch "
+                                                "objectmgr %s !=  signal value: "
+                                                "%s object: %s"
+                                                % (prop, str(value), str(e), object_path)
+                                            )
+                                            # Dump objects
+                                            log("Signal db")
+                                            dump_object(object_path,
+                                                        objects[object_path])
+                                            log("GetManagedObjects")
+                                            dump_object(object_path, c[object_path])
 
                                         # Fix up signal db to prevent reporting
                                         # same error over and over again.
@@ -364,6 +372,9 @@ def check_idle():
             return False
         else:
             log("Validating objects exit %f" % (time.time() - start))
+
+        # Clear out invalidated
+        invalidated = dict()
 
     return True
 
