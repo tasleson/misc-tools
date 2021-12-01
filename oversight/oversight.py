@@ -228,6 +228,7 @@ def process_pid(name):
 
 
 def kill_test():
+    # lvmdbusd specific
     pid = process_pid("lvmdbustest.py")
     if pid:
         os.kill(pid, 9)
@@ -265,7 +266,7 @@ def check_idle():
         try:
             sys_bus = dbus.SystemBus()
             c = _get_managed_objects(sys_bus)
-            p = copy.deepcopy(objects)
+            p = copy.deepcopy(objects)  # Make full copy of signal DB
 
             # Compare what we just retrieved to what we have gotten via signals
             for object_path, entry in c.items():
