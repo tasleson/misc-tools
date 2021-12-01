@@ -425,7 +425,7 @@ if __name__ == "__main__":
         # There is an inherent race condition between fetching all the objects
         # and having the signal handlers in place.  We will install signal
         # handlers and schedule the object retrieval to occur when the main
-        # even loop is idle.  This way the main loop is up and processing
+        # event loop is idle.  This way the main loop is up and processing
         # events before we retrieve the entire object state.
         GLib.idle_add(get_objects, bus)
         GLib.timeout_add(500, check_idle)
