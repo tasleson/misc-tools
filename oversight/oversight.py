@@ -60,6 +60,7 @@ pending_rm = []
 pending_update = []
 
 last_update = 0
+dirty = False
 last_log = time.time()
 errors = 0
 
@@ -119,11 +120,13 @@ def properties_changed(*args, **kwargs):
     global objects
     global pending_update
     global last_update
+    global dirty
 
     # Is there a better way to do this without requiring registering a
     # signal handler for every object?
     if kwargs["object_path"].startswith(SRV_PATH):
         last_update = time.time()
+        dirty = True
 
         object_path = kwargs["object_path"]
         interface = args[0]
@@ -151,8 +154,10 @@ def object_manager_add(object_path, payload):
     global objects
     global pending_add
     global last_update
+    global dirty
 
     last_update = time.time()
+    dirty = True
 
     if inital_fetch_complete:
         for adding in pending_add:
@@ -183,8 +188,10 @@ def object_manager_remove(object_path, payload):
     global objects
     global pending_rm
     global last_update
+    global dirty
 
     last_update = time.time()
+    dirty = True
 
     if inital_fetch_complete:
         for p in pending_rm:
@@ -238,20 +245,22 @@ def get_objects(the_bus):
 
 def check_idle():
     global last_update
+    global dirty
 
     current = time.time()
-    diff = current - last_update
+    time_since_last_signal = current - last_update
 
     # It's difficult to determine that any given state is correct if things are
     # rapidly changing.  We will wait until we haven't gotten any signals for
     # a while and we will then compare what the object manager retrieves vs.
     # what we have gotten via signals.  They should match if all the signals
     # are being delivered as needed.
-    if diff > 3.0 and objects is not None:
+    if dirty and time_since_last_signal > 3.0 and objects is not None:
         start = time.time()
         log("Validating objects entry")
 
         last_update = current
+        dirty = False
 
         try:
             sys_bus = dbus.SystemBus()
