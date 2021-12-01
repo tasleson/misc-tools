@@ -1,9 +1,19 @@
 #!/usr/bin/python3
 
 """
-Prototype signal verification for lvmdbusd or other dbus services
+Prototype signal verification for lvmdbusd or potentially other dbus services
 
-Note: Entire execution of code is event driven utilizing the GLib main context.
+Dbus signals when implemented correctly for a service allow a client the ability
+to have current state updated when it occurs and be totally event driven.
+
+Theory of operation:
+* Register signal handlers, fetch current state by using GetManagedObjects and
+  keep this as the reference db that should only be updated via signals
+* After 3 seconds have elapsed since the last signal, retrieve entire state by
+  calling GetManagedObjects and compare to in memory db.  Log any differences.
+
+Note: Entire execution of code is event driven utilizing the GLib main context
+      and timers.  Code is inherently single threaded with this approach.
 
 To run the lvmdbus test suite, edit the unit test (TODO: Add option to unit test)
 
