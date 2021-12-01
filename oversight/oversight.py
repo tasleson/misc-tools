@@ -411,7 +411,8 @@ if __name__ == "__main__":
         loop = GLib.MainLoop()
         loop.run()
     except KeyboardInterrupt:
-        dump()
+        log("Exiting on ^C")
+        # dump()
         if errors > 0:
             sys.exit(5)
         sys.exit(0)
