@@ -68,12 +68,8 @@ invalidated = dict()
 
 def log_error(msg):
     global errors
-    global last_log
     errors += 1
-
-    n = time.time()
-    print("[%f][%f]: %s" % (n, n - last_log, msg))
-    last_log = n
+    log(msg)
 
 
 def log(msg):
