@@ -387,7 +387,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1 and len(sys.argv) != 3:
         log(
-            "syntax: None or bus name path, eg. %s %s %s"
+            "syntax: None or bus_name path, eg. %s %s %s"
             % (sys.argv[0], BUS_NAME, SRV_PATH)
         )
         sys.exit(1)
