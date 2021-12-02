@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
 """
-Prototype signal verification for lvmdbusd or potentially other dbus services
+Prototype signal verification for lvmdbusd and potentially other dbus services.
 
 Dbus signals when implemented correctly for a service allow a client the ability
-to have current state updated when it occurs and be totally event driven.
+to have its current state updated when it occurs and be totally event driven.
 
 Theory of operation:
 * Register signal handlers, fetch current state by using GetManagedObjects and
