@@ -81,9 +81,9 @@ def log(msg):
 
 def dump_object(object_path, interfaces):
     log(" ")
-    log("object dump %s" % object_path)
+    log("object dump: %s" % object_path)
     for intf, values in sorted(interfaces.items(), key=lambda x: x[0]):
-        log("Interface %s" % intf)
+        log("Interface: %s" % intf)
         for prop, val in sorted(values.items(), key=lambda x: x[0]):
             log("\t%s: %s" % (prop, str(val)))
     log(" ")
