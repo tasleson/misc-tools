@@ -81,11 +81,12 @@ def log(msg):
 
 def dump_object(object_path, interfaces):
     log(" ")
-    log("object %s" % object_path)
+    log("object dump %s" % object_path)
     for intf, values in sorted(interfaces.items(), key=lambda x: x[0]):
         log("Interface %s" % intf)
         for prop, val in sorted(values.items(), key=lambda x: x[0]):
             log("\t%s: %s" % (prop, str(val)))
+    log(" ")
 
 
 def dump():
@@ -96,7 +97,7 @@ def dump():
         for obj_path, info in objects.items():
             dump_object(obj_path, info)
 
-    log("**** Dumping GetManagedObjects\n")
+    log("**** Dumping GetManagedObjects")
     sys_bus = dbus.SystemBus()
     c = _get_managed_objects(sys_bus)
     for obj_path, info in c.items():
@@ -108,11 +109,11 @@ def _do_prop_update(object_path, interface, changed, invalid):
     global invalidated
 
     for prop, new_value in changed.items():
-        log("%s[%s][%s] = %s" % (object_path, interface, prop, str(new_value)))
+        log("SIGNAL prop. change: %s[%s][%s] = %s" % (object_path, interface, prop, str(new_value)))
         objects[object_path][interface][prop] = new_value
 
     if invalid and len(invalid) > 0:
-        log("%s[%s] invalidated: [%s]" % ((object_path, interface, ",".join(invalid))))
+        log("SIGNAL: %s[%s] invalidated: [%s]" % ((object_path, interface, ",".join(invalid))))
         invalidated.setdefault(object_path + interface, []).extend(invalid)
 
 
@@ -148,7 +149,8 @@ def properties_changed(*args, **kwargs):
 def _do_obj_add(object_path, interface_property_dict):
     global objects
     objects[object_path] = interface_property_dict
-    log("Object add: %s" % object_path)
+    log(" ")
+    log("SIGNAL: Object add: %s" % object_path)
     dump_object(object_path, interface_property_dict)
 
 
@@ -176,11 +178,11 @@ def _do_obj_del(object_path, interfaces_removed):
     if object_path in objects:
         for intf in interfaces_removed:
             del objects[object_path][intf]
-            log("Object interface deleted %s:%s" % (object_path, intf))
+            log("SIGNAL: Object interface deleted %s:%s" % (object_path, intf))
 
         if not objects[object_path]:
             del objects[object_path]
-            log("Object del: %s" % object_path)
+            log("SIGNAL: Object del: %s" % object_path)
     else:
         log_error("Got a remove for object we don't have! %s" % object_path)
 
