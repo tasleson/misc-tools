@@ -149,6 +149,7 @@ def _do_obj_add(object_path, interface_property_dict):
     global objects
     objects[object_path] = interface_property_dict
     log("Object add: %s" % object_path)
+    dump_object(object_path, interface_property_dict)
 
 
 def object_manager_add(object_path, payload):
