@@ -1,0 +1,17 @@
+[package]
+name = "blake-bench"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+rand = "0.8"
+blake2 = "0.10"
+blake3 = { version = "1", default-features = true }
+rayon = { version = "1", optional = true }
+sysinfo = { version = "0.37" }
+num_cpus = "1.16"
+rustc_version_runtime = "0.3"
+
+[features]
+b3rayon = ["rayon", "blake3/rayon"]
