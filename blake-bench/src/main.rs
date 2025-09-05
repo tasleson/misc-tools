@@ -35,7 +35,7 @@ impl ImplKind {
             #[cfg(feature = "b3rayon")]
             ImplKind::Blake3Parallel => "blake3_parallel",
             ImplKind::Blake2b256 => "blake2b_256",
-            ImplKind::Blake2s256 => "blake2s_256",
+            ImplKind::Blake2s256 => "blake2s_256v1",
         }
     }
 }
@@ -188,13 +188,10 @@ fn hash_blake2b_256(buf: &[u8]) -> [u8; 32] {
     hasher.finalize().into()
 }
 fn hash_blake2s_256(buf: &[u8]) -> [u8; 32] {
-    use blake2::digest::{Update, VariableOutput};
-    use blake2::Blake2bVar;
-    let mut hasher = Blake2bVar::new(32).unwrap();
+    use blake2::{Blake2s256, Digest};
+    let mut hasher = Blake2s256::new();
     hasher.update(buf);
-    let mut out = [0u8; 32];
-    hasher.finalize_variable(&mut out).unwrap();
-    out
+    hasher.finalize().into()
 }
 
 fn digest_once(kind: ImplKind, buf: &[u8]) -> [u8; 32] {
